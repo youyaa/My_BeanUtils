@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * User:        sunqingfeng6
+ * User:        listeningrain
  * Date:        2018/10/30 17:27
  * Description:  重复造轮子系列之BeanUtils
  */
@@ -20,14 +20,18 @@ public class Beanutils {
         PropertyDescriptor target_propertyDescriptor = null;
         BeanInfo targetBeanInfo = null;
         try{
+            //获取目标对象的对象信息
             targetBeanInfo = Introspector.getBeanInfo(target.getClass());
 
         }catch (Exception e){
             e.printStackTrace();
         }
         try{
+            //获取源对象的对象信息
             BeanInfo beanInfo = Introspector.getBeanInfo(source.getClass());
+            //从对象信息中获取所有属性的属性描述器
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            //遍历源对象的属性描述器
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors){
                 //忽略存在的class属性
                 if(!"class".equals(propertyDescriptor.getName())){
@@ -36,23 +40,25 @@ public class Beanutils {
                     Method readMethod = propertyDescriptor.getReadMethod();
                     //获取source对象中的属性名
                     String key = propertyDescriptor.getName();
-                    //获取source对象中的属性值
+                    //通过反射调用get方法，获取source对象中的该属性的值
                     Object oldValue = readMethod.invoke(source);
                     //获取source对象属性的类型
                     String parameterName = propertyDescriptor.getPropertyType().getName();
 
-                    System.out.println("在source对象中查询到"+key+"属性");
+                    System.out.println("在source对象中查询到属性："+key);
 
-                    //获取target对象属性的属性描述器
+                    //获取target对象属性的属性描述器，即上面取到的key在目标对象中的属性描述器
                     target_propertyDescriptor = getPropertyDescriptor(target.getClass(),key);
                     if(null != target_propertyDescriptor){
                         //获取target对象属性的set方法
                         Method writeMethod = target_propertyDescriptor.getWriteMethod();
                         //获取target对象属性的类型
                         String name = target_propertyDescriptor.getPropertyType().getName();
+                        //数据类型一致，则复制值
                         if(parameterName.equals(name)){
                             //调用set方法向target对象中设置值
                             System.out.println("开始为target设置值，设置的当前属性是"+key);
+                            //通过反射调用set方法，设置对应的值
                             writeMethod.invoke(target,oldValue);
                             System.out.println("设置值成功");
                         }else{
@@ -61,7 +67,7 @@ public class Beanutils {
                     }else{
                         System.out.println("在target中没有查询到"+key+"的属性");
                     }
-                    System.out.println("---------操作完成-------");
+                    //System.out.println("---------操作完成-------");
 
                 }
             }
@@ -70,7 +76,6 @@ public class Beanutils {
             e.printStackTrace();
         }
     }
-
 
    private static Map<Class, Map<String, PropertyDescriptor>> cacheMap = null;
 

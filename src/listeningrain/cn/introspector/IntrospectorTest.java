@@ -16,7 +16,9 @@ public class IntrospectorTest {
     public static void main(String[] args) throws Exception{
         Circle circle = new Circle(12,13,14, 15);
         Circle2 circle2 = new Circle2();
+        System.out.println("开始复制对象");
         Beanutils.copyProperties(circle,circle2);
+        System.out.println("复制对象完成");
         System.out.println(circle2);
 
     }
