@@ -22,7 +22,6 @@ public class Beanutils {
         try{
             //获取目标对象的对象信息
             targetBeanInfo = Introspector.getBeanInfo(target.getClass());
-
         }catch (Exception e){
             e.printStackTrace();
         }
